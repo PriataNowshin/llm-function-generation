@@ -14,7 +14,7 @@ from src.constants import (
     OUTPUT_DIR,
 )
 from src.io_helper import load_data_from_jsonl, write_data_into_json
-from src.llm_client import build_config, generate_requirement, regenerate_function
+from src.llm_client import build_config, generate_requirement, generate_function
 
 
 def resolve_llm_model_from_arg(llm: str) -> str:
@@ -68,7 +68,7 @@ def main() -> None:
         new_code = record.get("full_new_function_code")
 
         requirement = generate_requirement(old_code, new_code, config)
-        new_function_code_by_llm = regenerate_function(old_code, requirement, config)
+        new_function_code_by_llm = generate_function(old_code, requirement, config)
 
         output.append(
             {

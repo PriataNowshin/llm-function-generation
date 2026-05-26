@@ -29,7 +29,7 @@ load_dotenv(override=True)
 
 
 @dataclass
-class LLM_Config:
+class LLMConfig:
     """Holds LLM API configuration."""
     api_key: str
     model: str
@@ -40,7 +40,7 @@ class LLM_Config:
     retry_backoff_sec: float
 
 
-def build_config(model: str) -> LLM_Config:
+def build_config(model: str) -> LLMConfig:
     """Build an LLM_Config from the environment and the chosen model.
 
     This reads the API key from the API_KEY environment variable and combines it
@@ -59,7 +59,7 @@ def build_config(model: str) -> LLM_Config:
     if not api_key:
         raise SystemExit("Missing API_KEY")
 
-    return LLM_Config(
+    return LLMConfig(
         api_key=api_key,
         model=model,
         base_url=BASE_URL,
@@ -70,7 +70,7 @@ def build_config(model: str) -> LLM_Config:
     )
 
 
-def invoke_llm(messages: List[Dict[str, str]], config: LLM_Config) -> str:
+def invoke_llm(messages: List[Dict[str, str]], config: LLMConfig) -> str:
     """Invoke an OpenAI-compatible chat-completions endpoint with retries.
 
     Args:
@@ -112,7 +112,7 @@ def invoke_llm(messages: List[Dict[str, str]], config: LLM_Config) -> str:
     raise RuntimeError("LLM request failed after retries.")
 
 
-def generate_requirement(old_code: str, new_code: str, config: LLM_Config) -> str:
+def generate_requirement(old_code: str, new_code: str, config: LLMConfig) -> str:
     """Generate a functional requirement describing a code change.
 
     Args:
@@ -131,7 +131,7 @@ def generate_requirement(old_code: str, new_code: str, config: LLM_Config) -> st
     return invoke_llm(messages, config)
 
 
-def regenerate_function(old_code: str, requirement: str, config: LLM_Config) -> str:
+def generate_function(old_code: str, requirement: str, config: LLMConfig) -> str:
     """Regenerate updated function code given an old version and a requirement.
 
     Args:
