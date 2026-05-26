@@ -1,5 +1,5 @@
 """Prompt and message construction for the LLM calls."""
-from __future__ import annotations
+ 
 
 REQUIREMENT_GENERATION_SYSTEM_PROMPT: str = """
 You write concise functional requirements describing a change between

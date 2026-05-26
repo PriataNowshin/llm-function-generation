@@ -2,7 +2,6 @@
 
 Keep configuration-like values here so they can be imported from other modules.
 """
-from __future__ import annotations
 
 from typing import Dict
 

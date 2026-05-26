@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Entry point for LLM function-generation dataset creation."""
 
-from __future__ import annotations
-
 import argparse
 import os
 import sys

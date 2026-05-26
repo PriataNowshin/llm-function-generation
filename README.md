@@ -7,7 +7,7 @@ Generate a dataset for function-change examples with two LLM steps:
 
 ## Input
 
-- Default input file: `data/test_data.jsonl` (one JSON object per line)
+- Default input file: `data/changed_functions.jsonl` (one JSON object per line)
 
 Note: The input filename is configured in `src/constants.py` via `INPUT_FILENAME`.
 
@@ -31,7 +31,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Set environment variable in a .env file for an OpenAI-compatible chat completions endpoint:
+Set the environment variable in a .env file for an OpenAI-compatible chat completions endpoint:
 
 - `API_KEY` (required)
 
