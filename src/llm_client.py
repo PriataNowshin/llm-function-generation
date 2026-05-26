@@ -128,8 +128,6 @@ def generate_requirement(old_code: str, new_code: str, config: LLM_Config) -> st
         {"role": "user", "content": REQUIREMENT_GENERATION_USER_PROMPT.format(old_code=old_code, new_code=new_code)},
     ]
 
-    print(messages)
-
     return invoke_llm(messages, config)
 
 
@@ -148,7 +146,5 @@ def regenerate_function(old_code: str, requirement: str, config: LLM_Config) -> 
         {"role": "system", "content": FUNCTION_GENERATION_SYSTEM_PROMPT},
         {"role": "user", "content": FUNCTION_GENERATION_USER_PROMPT.format(old_code=old_code, requirement=requirement)},
     ]
-
-    print(messages)
 
     return invoke_llm(messages, config)

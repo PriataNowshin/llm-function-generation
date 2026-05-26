@@ -64,16 +64,10 @@ def main() -> None:
 
     output: List[Dict[str, Any]] = []
     for idx, record in enumerate(load_data_from_jsonl(input_path), start=1):
-        print("====" * 20)
         old_code = record.get("full_old_function_code")
         new_code = record.get("full_new_function_code")
 
-        print("Old code:", old_code)
-        print("\n\n")
-        print("New code:", new_code)
-
         requirement = generate_requirement(old_code, new_code, config)
-        print("\n\n")
         new_function_code_by_llm = regenerate_function(old_code, requirement, config)
 
         output.append(
@@ -92,12 +86,8 @@ def main() -> None:
             }
         )
 
-        print("====" * 20)
-
-        # if idx % 10 == 0:
-        print(f"Processed {idx} records...", file=sys.stderr)
-
-        print("\n" * 5)
+        if idx % 10 == 0:
+            print(f"Processed {idx} records...", file=sys.stderr)
 
     write_data_into_json(output_path, output)
     print(f"Wrote {len(output)} records to {output_path}")
