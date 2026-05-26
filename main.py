@@ -37,7 +37,11 @@ def resolve_llm_model_from_arg(llm: str) -> str:
     if not llm:
         raise SystemExit("Model alias must be a non-empty string.")
 
-    return MODEL_MAP.get(llm, llm)
+    if llm not in MODEL_MAP:
+        known = ", ".join(sorted(MODEL_MAP))
+        raise KeyError(f"Unknown model alias {llm!r}. Choose one of: {known}")
+
+    return MODEL_MAP[llm]
 
 
 def main() -> None:
@@ -61,8 +65,8 @@ def main() -> None:
     output: List[Dict[str, Any]] = []
     for idx, record in enumerate(load_data_from_jsonl(input_path), start=1):
         print("====" * 20)
-        old_code = record.get("full_old_function_code") or ""
-        new_code = record.get("full_new_function_code") or ""
+        old_code = record.get("full_old_function_code")
+        new_code = record.get("full_new_function_code")
 
         print("Old code:", old_code)
         print("\n\n")
