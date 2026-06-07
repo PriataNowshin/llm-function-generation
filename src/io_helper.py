@@ -67,4 +67,4 @@ def append_record_to_json(path: str, record: Dict[str, Any]) -> None:
     data.append(record)
     
     with open(path, "w", encoding="utf-8") as file:
-        json.dump(data, file, ensure_ascii=True, indent=2)
+        json.dump(data, file, ensure_ascii=False, indent=2)
