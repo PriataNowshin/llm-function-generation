@@ -4,6 +4,7 @@
 import argparse
 import os
 import sys
+from tqdm import tqdm
 from typing import Any, Dict, List
 
 from src.constants import (
@@ -72,12 +73,10 @@ def main() -> None:
 
     processed_function_names = load_processed_function_names(output_path)
 
-    for idx, record in enumerate(load_data_from_jsonl(input_path), start=1):
+    records = load_data_from_jsonl(input_path)
+    filtered_records = [r for r in records if r.get("function_name") not in processed_function_names]
 
-        if record.get("function_name") in processed_function_names:
-            print(f"Skipping already processed function {record.get('function_name')}", file=sys.stderr)
-            continue
-
+    for record in tqdm(filtered_records, desc="Processing records"):
         old_code = record.get("full_old_function_code")
         new_code = record.get("full_new_function_code")
 
@@ -99,9 +98,6 @@ def main() -> None:
             }
 
         append_record_to_json(output_path, output_record)
-
-        if idx % 10 == 0:
-            print(f"Processed {idx} records...", file=sys.stderr)
 
     print(f"Completed processing records to {output_path}")
 
