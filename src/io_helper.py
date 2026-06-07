@@ -28,19 +28,48 @@ def load_data_from_jsonl(path: str) -> List[Dict[str, Any]]:
     return records
 
 
-def write_data_into_json(path: str, payload: List[Dict[str, Any]]) -> None:
-    """Write a list of JSON-serializable objects to a JSON file.
+def load_processed_function_names(path: str) -> set:
+    """Load the set of processed function names from an existing output JSON file.
 
-    Creates the parent directory for the output file if it does not already
-    exist.
+    This is used to avoid re-processing functions when appending to an existing
+    output file.
 
     Args:
-        path: Output file path.
-        payload: List of dictionaries to write as a JSON array.
+        path: Path to the existing output JSON file.
 
     Returns:
-        None
+        A set of function names that have already been processed.
+    """
+    function_names = set()
+
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+            for record in data:
+                function_names.add(record.get("function_name"))
+
+    return function_names
+
+
+def append_record_to_json(path: str, record: Dict[str, Any]) -> None:
+    """Append or update a single record in the JSON array file.
+    
+    If the file doesn't exist, creates it with the record as the first element.
+    If the file exists, loads the current array, appends the new record, and 
+    writes back.
+    
+    Args:
+        path: Path to the output JSON file.
+        record: Dictionary to append.
     """
     os.makedirs(os.path.dirname(path), exist_ok=True)
+    
+    data = []
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+    data.append(record)
+    
     with open(path, "w", encoding="utf-8") as file:
-        json.dump(payload, file, ensure_ascii=True, indent=2)
+        json.dump(data, file, ensure_ascii=True, indent=2)

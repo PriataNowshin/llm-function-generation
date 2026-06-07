@@ -13,8 +13,16 @@ from src.constants import (
     MODEL_MAP,
     OUTPUT_DIR,
 )
-from src.io_helper import load_data_from_jsonl, write_data_into_json
-from src.llm_client import build_config, generate_requirement, generate_function
+from src.io_helper import (
+     load_data_from_jsonl,
+     load_processed_function_names,
+     append_record_to_json,
+)
+from src.llm_client import (
+    build_config, 
+    generate_requirement, 
+    generate_function
+)
 
 
 def resolve_llm_model_from_arg(llm: str) -> str:
@@ -62,16 +70,21 @@ def main() -> None:
     output_path = os.path.join(OUTPUT_DIR, OUTPUT_FILENAME)
     config = build_config(llm)
 
-    output: List[Dict[str, Any]] = []
+    processed_function_names = load_processed_function_names(output_path)
+
     for idx, record in enumerate(load_data_from_jsonl(input_path), start=1):
+
+        if record.get("function_name") in processed_function_names:
+            print(f"Skipping already processed function {record.get('function_name')}", file=sys.stderr)
+            continue
+
         old_code = record.get("full_old_function_code")
         new_code = record.get("full_new_function_code")
 
         requirement = generate_requirement(old_code, new_code, config)
         new_function_code_by_llm = generate_function(old_code, requirement, config)
 
-        output.append(
-            {
+        output_record = {
                 "repo_full_name": record.get("repo_full_name"),
                 "file_path": record.get("file_path"),
                 "function_name": record.get("function_name"),
@@ -84,13 +97,13 @@ def main() -> None:
                 "requirement": requirement,
                 "new_function_code_by_llm": new_function_code_by_llm,
             }
-        )
+
+        append_record_to_json(output_path, output_record)
 
         if idx % 10 == 0:
             print(f"Processed {idx} records...", file=sys.stderr)
 
-    write_data_into_json(output_path, output)
-    print(f"Wrote {len(output)} records to {output_path}")
+    print(f"Completed processing records to {output_path}")
 
 
 if __name__ == "__main__":
