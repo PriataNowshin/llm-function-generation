@@ -1,34 +1,29 @@
-"""I/O helpers for loading JSONL inputs and writing JSON outputs."""
+"""I/O helpers for loading JSON inputs and writing JSON outputs."""
 
 import json
 import os
 from typing import Any, Dict, List
 
 
-def load_data_from_jsonl(path: str) -> List[Dict[str, Any]]:
-    """Load JSON objects from a JSONL file.
+def load_data_from_json(path: str) -> List[Dict[str, Any]]:
+    """Load JSON objects from a JSON file.
 
-    Reads the file line-by-line and returns one parsed JSON object per non-empty
-    line.
+    Reads the file and returns the parsed JSON object.
 
     Args:
-        path: Path to the input JSONL file.
+        path: Path to the input JSON file.
 
     Returns:
-        A list of dictionaries parsed from each JSON line.
+        A list of dictionaries parsed from the JSON file.
     """
-    records: List[Dict[str, Any]] = []
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as file:
+            return json.load(file)
 
-    with open(path, "r", encoding="utf-8") as file:
-        for line in file:
-            line = line.strip()
-            if line:
-                records.append(json.loads(line))
-
-    return records
+    return []
 
 
-def load_processed_function_names(path: str) -> set:
+def load_processed_function_ids(path: str) -> set:
     """Load the set of processed function names from an existing output JSON file.
 
     This is used to avoid re-processing functions when appending to an existing
@@ -40,15 +35,15 @@ def load_processed_function_names(path: str) -> set:
     Returns:
         A set of function names that have already been processed.
     """
-    function_names = set()
+    function_ids = set()
 
     if os.path.exists(path):
         with open(path, "r", encoding="utf-8") as file:
             data = json.load(file)
             for record in data:
-                function_names.add(record.get("function_name"))
+                function_ids.add(record.get("id"))
 
-    return function_names
+    return function_ids
 
 
 def append_record_to_json(path: str, record: Dict[str, Any]) -> None:

@@ -8,7 +8,7 @@ from typing import Dict
 DATA_DIR: str = "data"
 OUTPUT_DIR: str = "output"
 
-INPUT_FILENAME: str = "changed_functions.jsonl"
+INPUT_FILENAME: str = "changed_functions.json"
 OUTPUT_FILENAME: str = "llm_generated_dataset.json"
 
 BASE_URL = "https://openrouter.ai/api/v1"

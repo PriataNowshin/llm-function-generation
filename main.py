@@ -1,11 +1,8 @@
-#!/usr/bin/env python3
 """Entry point for LLM function-generation dataset creation."""
 
 import argparse
 import os
-import sys
 from tqdm import tqdm
-from typing import Any, Dict, List
 
 from src.constants import (
     DATA_DIR,
@@ -15,8 +12,8 @@ from src.constants import (
     OUTPUT_DIR,
 )
 from src.io_helper import (
-     load_data_from_jsonl,
-     load_processed_function_names,
+     load_data_from_json,
+     load_processed_function_ids,
      append_record_to_json,
 )
 from src.llm_client import (
@@ -71,10 +68,10 @@ def main() -> None:
     output_path = os.path.join(OUTPUT_DIR, OUTPUT_FILENAME)
     config = build_config(llm)
 
-    processed_function_names = load_processed_function_names(output_path)
+    processed_function_ids = load_processed_function_ids(output_path)
 
-    records = load_data_from_jsonl(input_path)
-    filtered_records = [r for r in records if r.get("function_name") not in processed_function_names]
+    records = load_data_from_json(input_path)
+    filtered_records = [r for r in records if r.get("id") not in processed_function_ids]
 
     for record in tqdm(filtered_records, desc="Processing records"):
         old_code = record.get("full_old_function_code")
@@ -84,6 +81,7 @@ def main() -> None:
         new_function_code_by_llm = generate_function(old_code, requirement, config)
 
         output_record = {
+                "id": record.get("id"),
                 "repo_full_name": record.get("repo_full_name"),
                 "file_path": record.get("file_path"),
                 "function_name": record.get("function_name"),
