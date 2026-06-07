@@ -28,18 +28,14 @@ Updated function code:
 
 Write the requirement using the following rules:
 
-1. Write from the user's, maintainer's, or senior developer's perspective.
+1. Write from the user's perspective.
    The requirement should sound like a task given to a developer.
 
-2. Focus on what the function should do after the update.
-   Describe observable behavior, expected output, input handling, validation,
-   exceptions, edge cases, side effects, or constraints when relevant.
+2. Focus on what the function should do after the update. Describe only observable behavior.
 
-3. Do not write a code-diff summary.
-   Avoid describing how the old code changed into the new code.
+3. Avoid describing how the old code changed into the new code.
 
-4. Do not mention implementation details unless they are necessary to express
-   the expected behavior.
+4. Do not mention implementation details.
 
 5. If the update is non-behavioral, such as formatting, cleanup, renaming,
    or refactoring without behavior change, return:
