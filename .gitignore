@@ -9,7 +9,5 @@ venv/
 .venv/
 
 .idea/
-data/
-output/
 data_50/
 output_50/
